@@ -43,5 +43,18 @@ class ViewerXApp extends StatelessWidget {
       bodyColor: AppColors.onSecondary,
       displayColor: AppColors.onSecondary,
     ),
+
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimary,
+        fixedSize: Size(double.maxFinite, 55.h),
+        textStyle: Typography.englishLike2018
+            .apply(fontSizeFactor: 1.sp)
+            .titleLarge
+            ?.copyWith(fontWeight: FontWeight.w600),
+      ),
+    ),
   );
 }

@@ -8,4 +8,6 @@ class AppColors {
 
   static const scanBg = Color(0xfff9c845);
   static const scanBtn = Color(0xffff9100);
+
+  static const ticketFg = Color(0xff968c86);
 }
