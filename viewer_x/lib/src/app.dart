@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:viewer_x/src/core/routing/app_router.dart';
 import 'package:viewer_x/src/core/themes/colors/app_colors.dart';
 
@@ -10,8 +11,23 @@ class ViewerXApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: 'ViewerX',
       routerConfig: _appRouter.config(),
-      theme: _buildTheme(),
+      builder: (context, appWidget) {
+        return Theme(
+          data: _buildTheme(),
+          child: ScreenUtilInit(
+            designSize: const Size(390, 844),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (context, child) {
+              return child!;
+            },
+            child: appWidget,
+          ),
+        );
+      },
     );
   }
 
@@ -25,5 +41,6 @@ class ViewerXApp extends StatelessWidget {
     ),
     brightness: Brightness.light,
     useMaterial3: true,
+    textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
   );
 }
