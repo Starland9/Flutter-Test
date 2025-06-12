@@ -1,9 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:viewer_x/src/core/routing/app_router.gr.dart';
+import 'package:viewer_x/src/logic/cam_service.dart';
 
 Map<String, PageRouteInfo> routes = {
-  "scan": ScanRoute(),
+  "scan": ScanRoute(cameraDescription: CamService.instance.cameras.first),
   "ticket": TicketRoute(),
   "history": HistoryRoute(),
 };

@@ -7,36 +7,21 @@ import 'package:viewer_x/src/core/extensions/context_x.dart';
 import 'package:viewer_x/src/core/themes/colors/app_colors.dart';
 import 'package:viewer_x/src/shared/widgets/custom_icon_button_filled.dart';
 
-late List<CameraDescription> _cameras;
-
 @RoutePage()
 class ScanScreen extends StatefulWidget {
-  const ScanScreen({super.key});
+  const ScanScreen({super.key, required this.cameraDescription});
+
+  final CameraDescription cameraDescription;
 
   @override
   State<ScanScreen> createState() => _ScanScreenState();
 }
 
-// @override
-// void didChangeAppLifecycleState(AppLifecycleState state) {
-//   final CameraController? cameraController = controller;
-
-//   // App state changed before we got the chance to initialize.
-//   // App state changed before we got the chance to initialize.
-//   // App state changed before we got the chance to initialize.
-//   if (cameraController == null || !cameraController.value.isInitialized) {
-//     return;
-//   }
-
-//   if (state == AppLifecycleState.inactive) {
-//     cameraController.dispose();
-//   } else if (state == AppLifecycleState.resumed) {
-//     _initializeCameraController(cameraController.description);
-//   }
-// }
-
-class _ScanScreenState extends State<ScanScreen> {
-  late final CameraController? controller;
+class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
+  late final CameraController _controller = CameraController(
+    widget.cameraDescription,
+    ResolutionPreset.max,
+  );
 
   @override
   void initState() {
@@ -46,21 +31,30 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   void dispose() {
-    controller?.dispose();
+    _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!_controller.value.isInitialized) {
+      return;
+    }
+    final CameraController cameraController = _controller;
+
+    if (state == AppLifecycleState.inactive) {
+      cameraController.dispose();
+    } else if (state == AppLifecycleState.resumed) {
+      _initializeCameraController(cameraController.description);
+    }
   }
 
   Future<void> _initializeCameraController(
     CameraDescription? description,
   ) async {
-    _cameras = await availableCameras();
-
-    controller = CameraController(
-      description ?? _cameras.first,
-      ResolutionPreset.max,
-    );
     try {
-      await controller?.initialize();
+      await _controller.initialize();
+      setState(() {});
     } on CameraException catch (e) {
       switch (e.code) {
         case 'CameraAccessDenied':
@@ -154,20 +148,19 @@ class _ScanScreenState extends State<ScanScreen> {
 
   Widget _buildCam() => Stack(
     children: [
-      Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: Container(
-          width: double.maxFinite,
-          height: 223.h,
-          decoration: BoxDecoration(
-            color: context.cs.secondary.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(32.r),
-            border: Border.all(color: context.cs.onPrimary, width: 1.w),
-          ),
-          child: controller?.value.isInitialized == false
-              ? Center(child: CircularProgressIndicator())
-              : CameraPreview(controller!),
+      Container(
+        clipBehavior: Clip.hardEdge,
+        margin: const EdgeInsets.all(2.0),
+        width: double.maxFinite,
+        height: 223.h,
+        decoration: BoxDecoration(
+          color: context.cs.secondary.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(32.r),
+          border: Border.all(color: context.cs.onPrimary, width: 1.w),
         ),
+        child: (!_controller.value.isInitialized)
+            ? Center(child: CircularProgressIndicator())
+            : CameraPreview(_controller),
       ),
       Positioned(top: 0, left: 0, child: Assets.icons.cameraCorner.svg()),
       Positioned(
