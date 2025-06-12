@@ -1,5 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:viewer_x/src/core/routing/app_router.gr.dart';
+
+Map<String, PageRouteInfo> routes = {
+  "scan": ScanRoute(),
+  "ticket": TicketRoute(),
+  "history": HistoryRoute(),
+};
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {
@@ -7,6 +14,19 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (var route in routes.entries)
+              TextButton(
+                child: Text(route.key),
+                onPressed: () => context.router.push(route.value),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }

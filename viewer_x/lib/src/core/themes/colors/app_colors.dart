@@ -5,4 +5,7 @@ class AppColors {
   static const secondary = Color(0xffefe8dd);
   static const onPrimary = Color(0xffffffff);
   static const onSecondary = Color(0xff000000);
+
+  static const scanBg = Color(0xfff9c845);
+  static const scanBtn = Color(0xffff9100);
 }

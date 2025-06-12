@@ -10,24 +10,21 @@ class ViewerXApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      title: 'ViewerX',
-      routerConfig: _appRouter.config(),
-      builder: (context, appWidget) {
-        return Theme(
-          data: _buildTheme(),
-          child: ScreenUtilInit(
-            designSize: const Size(390, 844),
-            minTextAdapt: true,
-            splitScreenMode: true,
-            builder: (context, child) {
-              return child!;
-            },
-            child: appWidget,
-          ),
+    return ScreenUtilInit(
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          title: 'ViewerX',
+          routerConfig: _appRouter.config(),
+          builder: (context, appWidget) {
+            return Theme(data: _buildTheme(), child: appWidget!);
+          },
         );
       },
+      child: this,
     );
   }
 
@@ -41,6 +38,10 @@ class ViewerXApp extends StatelessWidget {
     ),
     brightness: Brightness.light,
     useMaterial3: true,
-    textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
+    textTheme: Typography.englishLike2018.apply(
+      fontSizeFactor: 1.sp,
+      bodyColor: AppColors.onSecondary,
+      displayColor: AppColors.onSecondary,
+    ),
   );
 }

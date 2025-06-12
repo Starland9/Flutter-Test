@@ -27,8 +27,18 @@ class $AssetsIconsGen {
   /// File path: assets/icons/camera.svg
   SvgGenImage get camera => const SvgGenImage('assets/icons/camera.svg');
 
+  /// File path: assets/icons/camera_corner.svg
+  SvgGenImage get cameraCorner =>
+      const SvgGenImage('assets/icons/camera_corner.svg');
+
   /// List of all assets
-  List<SvgGenImage> get values => [arrowBack, arrowDown, arrowUp, camera];
+  List<SvgGenImage> get values => [
+    arrowBack,
+    arrowDown,
+    arrowUp,
+    camera,
+    cameraCorner,
+  ];
 }
 
 class $AssetsImagesGen {
