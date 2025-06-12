@@ -2,9 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:viewer_x/gen/assets.gen.dart';
 import 'package:viewer_x/src/core/extensions/context_x.dart';
 import 'package:viewer_x/src/core/themes/colors/app_colors.dart';
+import 'package:viewer_x/src/screens/scan/components/cam.dart';
+import 'package:viewer_x/src/shared/util/bank_card_util.dart';
 import 'package:viewer_x/src/shared/widgets/custom_icon_button_filled.dart';
 
 @RoutePage()
@@ -22,6 +26,11 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
     widget.cameraDescription,
     ResolutionPreset.max,
   );
+
+  bool _isImageProcessing = false;
+  bool _isImageCapturing = false;
+  XFile? _selectedImageFile;
+  BankCard? _bankCard;
 
   @override
   void initState() {
@@ -97,29 +106,64 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 30.w,
       children: [
-        CustomIconButtonFilled(
-          icon: Assets.icons.camera.svg(),
-          onPressed: () {},
-          size: size * 1.5,
-        ),
-        CircleAvatar(
-          backgroundColor: Colors.white,
-          radius: size.r,
-          child: IconButton.filled(
-            style: IconButton.styleFrom(
-              fixedSize: Size.square((size * 1.9).r),
-              backgroundColor: AppColors.scanBtn,
-            ),
-            onPressed: () {},
-            icon: SizedBox(),
-          ),
-        ),
-        CustomIconButtonFilled(
-          icon: Assets.icons.camera.svg(),
-          onPressed: () {},
-          size: size * 1.5,
-        ),
+        _buildFlashButton(size),
+        _buildPictureTakerButton(size),
+        _buildImagePickerButton(size),
       ],
+    );
+  }
+
+  CircleAvatar _buildPictureTakerButton(int size) {
+    return CircleAvatar(
+      backgroundColor: Colors.white,
+      radius: size.r,
+      child: _isImageCapturing || _isImageProcessing
+          ? CircularProgressIndicator.adaptive()
+          : IconButton.filled(
+              style: IconButton.styleFrom(
+                fixedSize: Size.square((size * 1.9).r),
+                backgroundColor: AppColors.scanBtn,
+              ),
+              onPressed: _takeAndAnalysePicture,
+              icon: SizedBox(),
+            ),
+    );
+  }
+
+  Widget _buildImagePickerButton(int size) {
+    if (_isImageProcessing) {
+      return SizedBox();
+    }
+
+    return CustomIconButtonFilled(
+      icon: Assets.icons.camera.svg(),
+      onPressed: _takeAndAnalyseImageFile,
+      size: size * 1.5,
+    );
+  }
+
+  Widget _buildFlashButton(int size) {
+    if (_isImageProcessing) {
+      return SizedBox();
+    }
+
+    return CustomIconButtonFilled(
+      icon: Icon(
+        _controller.value.flashMode == FlashMode.off
+            ? Icons.flash_off
+            : Icons.flash_on,
+        color: Colors.black,
+      ),
+      onPressed: () async {
+        setState(() {
+          _controller.setFlashMode(
+            _controller.value.flashMode == FlashMode.off
+                ? FlashMode.auto
+                : FlashMode.off,
+          );
+        });
+      },
+      size: size * 1.5,
     );
   }
 
@@ -146,48 +190,14 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildCam() => Stack(
-    children: [
-      Container(
-        clipBehavior: Clip.hardEdge,
-        margin: const EdgeInsets.all(2.0),
-        width: double.maxFinite,
-        height: 223.h,
-        decoration: BoxDecoration(
-          color: context.cs.secondary.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(32.r),
-          border: Border.all(color: context.cs.onPrimary, width: 1.w),
-        ),
-        child: (!_controller.value.isInitialized)
-            ? Center(child: CircularProgressIndicator())
-            : CameraPreview(_controller),
-      ),
-      Positioned(top: 0, left: 0, child: Assets.icons.cameraCorner.svg()),
-      Positioned(
-        top: 0,
-        right: 0,
-        child: RotatedBox(
-          quarterTurns: 1,
-          child: Assets.icons.cameraCorner.svg(),
-        ),
-      ),
-      Positioned(
-        bottom: 0,
-        left: 0,
-        child: RotatedBox(
-          quarterTurns: 3,
-          child: Assets.icons.cameraCorner.svg(),
-        ),
-      ),
-      Positioned(
-        bottom: 0,
-        right: 0,
-        child: RotatedBox(
-          quarterTurns: 2,
-          child: Assets.icons.cameraCorner.svg(),
-        ),
-      ),
-    ],
+  Widget _buildCam() => Padding(
+    padding: EdgeInsets.symmetric(horizontal: 4.w),
+    child: Cam(
+      context: context,
+      controller: _controller,
+      imageFile: _selectedImageFile,
+      bankCard: _bankCard,
+    ),
   );
 
   Column _buildHeadTitle(BuildContext context) {
@@ -214,5 +224,68 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
       icon: Assets.icons.arrowBack.svg(),
       onPressed: () => context.pop(),
     );
+  }
+
+  void _takeAndAnalysePicture() async {
+    try {
+      setState(() {
+        _isImageCapturing = true;
+      });
+      final file = await _controller.takePicture();
+      if (!mounted) return;
+      if (file.path.isNotEmpty) {
+        await analyseImage(file);
+      }
+      print(file);
+    } on CameraException catch (e) {
+      print(e);
+    } on Exception catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        _isImageCapturing = false;
+      });
+    }
+  }
+
+  void _takeAndAnalyseImageFile() async {
+    try {
+      final result = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (result != null) {
+        await analyseImage(result);
+      }
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> analyseImage(XFile imageFile) async {
+    try {
+      setState(() {
+        _isImageProcessing = true;
+        _selectedImageFile = imageFile;
+      });
+
+      final inputImage = InputImage.fromFilePath(imageFile.path);
+      final textRecognizer = TextRecognizer(
+        script: TextRecognitionScript.latin,
+      );
+
+      final RecognizedText recognizedText = await textRecognizer.processImage(
+        inputImage,
+      );
+
+      setState(() {
+        _bankCard = parseBankCard(recognizedText.text);
+      });
+
+      await textRecognizer.close();
+    } on Exception catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        _isImageProcessing = false;
+      });
+    }
   }
 }

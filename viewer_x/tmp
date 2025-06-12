@@ -1,0 +1,9 @@
+
+un script dart qui recupere ce texte
+""ING<)Débitmastercard54l2 534 55789L23Expire fin 12/21MME MICHAELA THEAU"
+
+ou celui ci 
+
+"(BANK1234 5b78 9000 0000EXPIREFIN 10/12GBM DUPONT MARTINCARD"
+
+et cree une classe carte bancaire avec ça en faisant du mieux possible
