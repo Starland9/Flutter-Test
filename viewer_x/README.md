@@ -61,9 +61,6 @@ Une application Flutter pour la reconnaissance de texte et l'analyse d'images.
 - `fl_chart` : Création de graphiques
 - `camera` : Accès à l'appareil photo
 
-## Licence
-
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus d'informations.
 
 ## Auteur
 
