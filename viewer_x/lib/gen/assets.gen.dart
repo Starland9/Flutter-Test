@@ -44,11 +44,26 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/360_F_24537291_jJTNaGlYyF9fC4VFHkYsgfDiWxl8xbJW.jpg
+  AssetGenImage get a360F24537291JJTNaGlYyF9fC4VFHkYsgfDiWxl8xbJW =>
+      const AssetGenImage(
+        'assets/images/360_F_24537291_jJTNaGlYyF9fC4VFHkYsgfDiWxl8xbJW.jpg',
+      );
+
+  /// File path: assets/images/carte-bancaire-mastercard-gold-ing-direct.webp
+  AssetGenImage get carteBancaireMastercardGoldIngDirect => const AssetGenImage(
+    'assets/images/carte-bancaire-mastercard-gold-ing-direct.webp',
+  );
+
   /// File path: assets/images/ticket.png
   AssetGenImage get ticket => const AssetGenImage('assets/images/ticket.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [ticket];
+  List<AssetGenImage> get values => [
+    a360F24537291JJTNaGlYyF9fC4VFHkYsgfDiWxl8xbJW,
+    carteBancaireMastercardGoldIngDirect,
+    ticket,
+  ];
 }
 
 class Assets {

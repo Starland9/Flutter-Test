@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:viewer_x/gen/assets.gen.dart';
 import 'package:viewer_x/src/core/extensions/context_x.dart';
 import 'package:viewer_x/src/core/themes/colors/app_colors.dart';
-import 'package:viewer_x/src/shared/widgets/dashed_line.dart';
 
 class TicketWidget extends StatelessWidget {
   const TicketWidget({super.key});
@@ -17,7 +16,7 @@ class TicketWidget extends StatelessWidget {
         children: [
           Assets.images.ticket.image(),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 100.h),
+            padding: EdgeInsets.symmetric(vertical: 100.h),
             child: Column(
               spacing: 8.h,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -25,7 +24,7 @@ class TicketWidget extends StatelessWidget {
               children: [
                 _unknwownCard(context),
                 _buildHead(context),
-                _buildDashedLine(context),
+                8.verticalSpace,
                 _buildBody(context),
                 _buildActions(context),
               ],
@@ -178,19 +177,6 @@ class TicketWidget extends StatelessWidget {
           style: trailingTextStyle ?? TextStyle(fontWeight: FontWeight.w600),
         ),
       ],
-    );
-  }
-
-  Padding _buildDashedLine(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 9.h),
-      child: DashedLine(
-        width: double.maxFinite,
-        height: 10.h,
-        dashWidth: 8.w,
-        dashSpace: 8.w,
-        color: context.cs.primary,
-      ),
     );
   }
 
