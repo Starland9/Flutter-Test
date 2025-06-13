@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:viewer_x/src/core/extensions/context_x.dart';
 import 'package:viewer_x/src/screens/history/components/history_chart.dart';
 import 'package:viewer_x/src/screens/history/components/totals_card.dart';
+import 'package:viewer_x/src/screens/history/components/transaction_history.dart';
 
 const screenPadding = 16.0;
 
@@ -29,6 +30,8 @@ class HistoryScreen extends StatelessWidget {
           _buildTotals(),
           32.verticalSpace,
           HistoryChart(screenPadding: screenPadding),
+          32.verticalSpace,
+          TransactionHistory(),
         ],
       ),
     );
