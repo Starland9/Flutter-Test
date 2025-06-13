@@ -34,10 +34,10 @@ BankCard parseBankCard(String rawText) {
       cardNumberRegex
           .firstMatch(cleaned)
           ?.group(0)
-          ?.replaceAll(RegExp(r'[^\d]'), '') ??
+          ?.replaceAll(RegExp(r'\D'), '') ??
       "Unknown";
 
-  // Extraction de la date d'expiration
+  // Extraction de la date expiration
   RegExp dateRegex = RegExp(r'(0[1-9]|1[0-2])[/ ]?(2[0-9])');
   String expiryDate =
       dateRegex.firstMatch(cleaned)?.group(0)?.replaceAll(' ', '/') ??
