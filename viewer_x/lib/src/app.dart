@@ -38,6 +38,7 @@ class ViewerXApp extends StatelessWidget {
     ),
     brightness: Brightness.light,
     useMaterial3: true,
+    scaffoldBackgroundColor: AppColors.onPrimary,
     textTheme: Typography.englishLike2018.apply(
       fontSizeFactor: 1.sp,
       bodyColor: AppColors.onSecondary,
