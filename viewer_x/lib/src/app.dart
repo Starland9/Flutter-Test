@@ -57,5 +57,33 @@ class ViewerXApp extends StatelessWidget {
             ?.copyWith(fontWeight: FontWeight.w600),
       ),
     ),
+
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      elevation: 0,
+      backgroundColor: Colors.white,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.onSecondary.withValues(alpha: 0.8),
+      unselectedIconTheme: IconThemeData(
+        color: AppColors.onSecondary.withValues(alpha: 0.8),
+      ),
+      unselectedLabelStyle: Typography.englishLike2018
+          .apply(fontSizeFactor: 1.sp)
+          .bodySmall,
+      selectedLabelStyle: Typography.englishLike2018
+          .apply(fontSizeFactor: 1.sp)
+          .bodySmall
+          ?.copyWith(fontWeight: FontWeight.w600),
+      showSelectedLabels: true,
+      showUnselectedLabels: true,
+      type: BottomNavigationBarType.fixed,
+      landscapeLayout: BottomNavigationBarLandscapeLayout.spread,
+      selectedIconTheme: IconThemeData(color: AppColors.primary),
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: AppColors.primary,
+      foregroundColor: AppColors.onPrimary,
+      elevation: 0,
+      shape: CircleBorder(),
+    ),
   );
 }
