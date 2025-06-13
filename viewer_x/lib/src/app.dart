@@ -78,6 +78,7 @@ class ViewerXApp extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       landscapeLayout: BottomNavigationBarLandscapeLayout.spread,
       selectedIconTheme: IconThemeData(color: AppColors.primary),
+      enableFeedback: false,
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: AppColors.primary,
